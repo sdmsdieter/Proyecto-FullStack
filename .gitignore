@@ -1,0 +1,23 @@
+# Node
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Environment files
+.env
+
+# Firebase credentials
+firebase-key.json
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
