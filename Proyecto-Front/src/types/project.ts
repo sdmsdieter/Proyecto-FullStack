@@ -1,11 +1,14 @@
 export interface Project {
   id: string;
   title: string;
-  year?: string;
   description: string;
+  featured: boolean;
+  year: string;
   technologies: string[];
-  featured?: boolean;
-  imageUrl?: string;
-  githubUrl?: string;
-  liveUrl?: string;
+  coverImage: string;
+  gallery: string[];
+  documents: {
+    name: string;
+    url: string;
+  }[];
 }

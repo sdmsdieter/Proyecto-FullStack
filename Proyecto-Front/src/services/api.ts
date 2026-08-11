@@ -1,10 +1,22 @@
+import type { Project } from '../types/project';
+
 const API_BASE = 'http://localhost:8000/api';
 
-export async function getProjects() {
+export async function getProjects(): Promise<Project[]> {
   const response = await fetch(`${API_BASE}/projects`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch projects');
+  }
+
+  return response.json();
+}
+
+export async function getProject(id: string): Promise<Project> {
+  const response = await fetch(`${API_BASE}/projects/${id}`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch project');
   }
 
   return response.json();

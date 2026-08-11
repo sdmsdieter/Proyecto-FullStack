@@ -1,11 +1,29 @@
-import { projects } from '../data/projects';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
+import { useEffect, useState } from 'react';
+import { getProjects } from '../services/api';
+import type { Project } from '../types/project';
 
 export default function Projects() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getProjects()
+      .then((data) => setProjects(data))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
   const featured = projects.find((p) => p.featured);
   const secondaryProjects = projects.filter((p) => !p.featured);
+  if (loading) {
+    return (
+      <section className='projects-section'>
+        <p>Loading projects...</p>
+      </section>
+    );
+  }
+
   return (
     <motion.section
       id='projects'
@@ -30,54 +48,64 @@ export default function Projects() {
       </div>
 
       {featured && (
-        <div className='featured-project'>
-          <div className='project-image'></div>
+  <div className='featured-project'>
+    <img
+      src={featured.coverImage}
+      alt={featured.title}
+      className='project-image'
+    />
 
-          <div className='project-content'>
-            <div className='project-meta'>
-              <span>Featured project</span>
-              <span>{featured.year}</span>
-            </div>
+    <div className='project-content'>
+      <div className='project-meta'>
+        <span>Featured project</span>
+        <span>{featured.year}</span>
+      </div>
 
-            <h3>{featured.title}</h3>
+      <h3>{featured.title}</h3>
 
-            <p>{featured.description}</p>
+      <p>{featured.description}</p>
 
-            <div className='project-stack'>
-              {featured.technologies.map((tech) => (
-                <span key={tech}>{tech}</span>
-              ))}
-            </div>
-
-            <div className='project-links'>
-              {/* Para que todas las tarjetas de proyecto tengan un enlace a la página de detalles del proyecto, 
-              puedes usar el componente Link de react-router-dom. Aquí tienes un ejemplo de cómo hacerlo: */}
-              <Link to={`/project/${featured.id}`} className='btn-primary'>
-                View Project
-              </Link>
-              <button className='btn-secondary'>GitHub</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className='projects-grid'>
-        {secondaryProjects.map((project) => (
-          <article key={project.id} className='project-card'>
-            <div className='project-thumb'></div>
-
-            <h4>{project.title}</h4>
-
-            <p>{project.description}</p>
-
-            <div className='project-stack'>
-              {project.technologies.map((tech) => (
-                <span key={tech}>{tech}</span>
-              ))}
-            </div>
-          </article>
+      <div className='project-stack'>
+        {featured.technologies.map((tech) => (
+          <span key={tech}>{tech}</span>
         ))}
       </div>
+
+      <div className='project-links'>
+        <Link to={`/project/${featured.id}`} className='btn-primary'>
+          View Project
+        </Link>
+        <button className='btn-secondary'>GitHub</button>
+      </div>
+    </div>
+  </div>
+)}
+
+      <div className='projects-grid'>
+  {secondaryProjects.map((project) => (
+    <article key={project.id} className='project-card'>
+      <img
+        src={project.coverImage}
+        alt={project.title}
+        className='project-thumb'
+      />
+
+      <h4>{project.title}</h4>
+
+      <p>{project.description}</p>
+
+      <div className='project-stack'>
+        {project.technologies.map((tech) => (
+          <span key={tech}>{tech}</span>
+        ))}
+      </div>
+
+      <Link to={`/project/${project.id}`} className='btn-secondary'>
+        View Project
+      </Link>
+    </article>
+  ))}
+</div>
     </motion.section>
   );
 }
